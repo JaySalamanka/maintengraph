@@ -34,7 +34,7 @@ async function run(root: string, options: { failOn?: "error" | "warning" | "none
 
 afterEach(async () => {
   await Promise.all(temporaryDirectories.splice(0).map((path) => rm(path, { force: true, recursive: true })));
-});
+}, 30_000);
 
 describe("input hardening", () => {
   it("returns exit code 2 and a report for invalid UTF-8", async () => {

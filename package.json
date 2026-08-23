@@ -42,7 +42,7 @@
   "devDependencies": {
     "@actions/core": "3.0.1",
     "@types/node": "26.2.0",
-    "@vercel/ncc": "0.44.1",
+    "@vercel/ncc": "0.45.0",
     "csv-parse": "7.0.2",
     "fast-glob": "3.3.3",
     "typescript": "5.9.3",
