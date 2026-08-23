@@ -5,6 +5,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-23
+
 ### Changed
 
 - Updated the reproducible Action/CLI bundler and rebuilt the reviewed bundles.
@@ -24,4 +26,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Reproducible bundles, exact public-tree/package allowlists and no-egress tests.
 
 [1.0.0]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.0
-[Unreleased]: https://github.com/JaySalamanka/hierarchyguard/compare/v1.0.0...HEAD
+[1.0.1]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.1
+[Unreleased]: https://github.com/JaySalamanka/hierarchyguard/compare/v1.0.1...HEAD
