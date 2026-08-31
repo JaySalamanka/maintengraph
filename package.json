@@ -41,12 +41,12 @@
   },
   "devDependencies": {
     "@actions/core": "3.0.1",
-    "@types/node": "26.2.0",
+    "@types/node": "26.4.0",
     "@vercel/ncc": "0.45.0",
     "csv-parse": "7.0.2",
     "fast-glob": "3.3.3",
     "typescript": "5.9.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "license": "MPL-2.0",
   "repository": {
