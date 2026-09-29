@@ -3,7 +3,7 @@
 
 export const TOOL_NAME = "maintengraph";
 export const LEGACY_TOOL_NAME = "hierarchyguard";
-export const TOOL_VERSION = "2.0.0";
+export const TOOL_VERSION = "2.0.1";
 export const RULESET_VERSION = "asset-governance@2";
 
 export type Severity = "error" | "warning" | "notice";
