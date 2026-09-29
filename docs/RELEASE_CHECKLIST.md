@@ -1,4 +1,4 @@
-# Release assurance record — v2.0.0
+# Release assurance record — v2.0.1
 
 Release date: 2026-09-29
 Owner and maintainer: Mohammad Allatayfeh
@@ -32,7 +32,7 @@ verification; it is not a legal certification.
 ## Publication
 
 - [x] Method, rule reference, migration, privacy, security and support documents are included.
-- [x] Stable version `2.0.0`, immutable tag `v2.0.0`, and moving major tag `v2`
+- [x] Stable version `2.0.1`, immutable tag `v2.0.1`, and moving major tag `v2`
       identify the reviewed release.
 - [x] GitHub release artifacts are built from the exact tagged commit.
 - [x] The Marketplace listing points to the release-owned Action metadata.

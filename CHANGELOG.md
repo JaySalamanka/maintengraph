@@ -5,6 +5,13 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-09-29
+
+### Changed
+
+- Updated direct and transitive minor/patch dependencies and rebuilt the reviewed bundles.
+- Advanced CodeQL initialization and analysis together to pinned v4.38.2.
+
 ## [2.0.0] - 2026-09-29
 
 ### Added
@@ -44,4 +51,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 [1.0.0]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.0
 [1.0.1]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.1
 [2.0.0]: https://github.com/JaySalamanka/maintengraph/releases/tag/v2.0.0
-[Unreleased]: https://github.com/JaySalamanka/maintengraph/compare/v2.0.0...HEAD
+[2.0.1]: https://github.com/JaySalamanka/maintengraph/releases/tag/v2.0.1
+[Unreleased]: https://github.com/JaySalamanka/maintengraph/compare/v2.0.1...HEAD
