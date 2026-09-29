@@ -1,15 +1,17 @@
 // SPDX-FileCopyrightText: 2026 Mohammad Allatayfeh
 // SPDX-License-Identifier: MPL-2.0
 
-export const TOOL_NAME = "hierarchyguard";
-export const TOOL_VERSION = "1.0.0";
-export const RULESET_VERSION = "generic@1";
+export const TOOL_NAME = "maintengraph";
+export const LEGACY_TOOL_NAME = "hierarchyguard";
+export const TOOL_VERSION = "2.0.0";
+export const RULESET_VERSION = "asset-governance@2";
 
 export type Severity = "error" | "warning" | "notice";
 export type FailOn = "error" | "warning" | "none";
 export type GateMode = "all" | "new";
 export type BaselineStatus = "new" | "unchanged";
 export type RootPolicy = "any" | "one";
+export type GovernanceMode = "off" | "review" | "release";
 
 export interface ColumnConfig {
   id: string;
@@ -17,6 +19,11 @@ export interface ColumnConfig {
   name: string;
   path: string;
   level: string;
+  identity?: string;
+  evidence?: string;
+  reviewStatus?: string;
+  objectClass?: string;
+  legacyIds?: string;
 }
 
 export interface RuleConfig {
@@ -24,6 +31,12 @@ export interface RuleConfig {
   maxDepth: number | null;
   requireParentBeforeChild: boolean;
   pathSeparator: string;
+  governance: {
+    mode: GovernanceMode;
+    evidenceSeparator: string;
+    legacyIdSeparator: string;
+    forbidGenericBuckets: boolean;
+  };
 }
 
 export interface LimitConfig {
@@ -36,7 +49,7 @@ export interface LimitConfig {
 }
 
 export interface AssetTreeConfig {
-  version: 1;
+  version: 1 | 2;
   files: string[];
   columns: ColumnConfig;
   rules: RuleConfig;
@@ -179,6 +192,12 @@ export const DEFAULT_CONFIG: AssetTreeConfig = {
     maxDepth: null,
     requireParentBeforeChild: true,
     pathSeparator: "/",
+    governance: {
+      mode: "off",
+      evidenceSeparator: ";",
+      legacyIdSeparator: ";",
+      forbidGenericBuckets: false,
+    },
   },
   gate: {
     failOn: "error",

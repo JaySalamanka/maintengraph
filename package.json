@@ -1,18 +1,22 @@
 {
-  "name": "hierarchyguard",
-  "version": "1.0.0",
-  "description": "Offline CI quality gates for CMMS asset hierarchy CSV files.",
+  "name": "maintengraph",
+  "version": "2.0.0",
+  "description": "Evidence-aware quality gates for CMMS asset hierarchies and reconciliation workflows.",
   "author": {
     "name": "Mohammad Allatayfeh"
   },
   "type": "module",
   "bin": {
+    "maintengraph": "dist/cli/index.js",
     "hierarchyguard": "dist/cli/index.js"
   },
   "files": [
     "dist/cli",
     "schemas",
+    "examples",
+    "docs/ASSET_GOVERNANCE_METHOD.md",
     "docs/DATA_HANDLING.md",
+    "docs/MIGRATION_V2.md",
     "docs/RELEASE_CHECKLIST.md",
     "docs/RULE_REFERENCE.md",
     "CHANGELOG.md",
@@ -46,16 +50,19 @@
     "csv-parse": "7.0.2",
     "fast-glob": "3.3.3",
     "typescript": "5.9.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
+  },
+  "overrides": {
+    "undici": "6.28.1"
   },
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JaySalamanka/hierarchyguard.git"
+    "url": "git+https://github.com/JaySalamanka/maintengraph.git"
   },
-  "homepage": "https://github.com/JaySalamanka/hierarchyguard#readme",
+  "homepage": "https://github.com/JaySalamanka/maintengraph#readme",
   "bugs": {
-    "url": "https://github.com/JaySalamanka/hierarchyguard/issues"
+    "url": "https://github.com/JaySalamanka/maintengraph/issues"
   },
   "keywords": [
     "cmms",

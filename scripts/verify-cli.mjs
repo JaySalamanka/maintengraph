@@ -32,11 +32,11 @@ try {
 
   const valid = run(["check", "valid.csv", "--config", "config.json", "--output-dir", "valid-report"]);
   requireStatus(valid, 0, "Valid CLI check");
-  if (!valid.stdout.includes("HierarchyGuard: PASS")) throw new Error("Valid CLI output did not report PASS.");
+  if (!valid.stdout.includes("MaintenGraph: PASS")) throw new Error("Valid CLI output did not report PASS.");
 
   const invalid = run(["check", "invalid.csv", "--config", "config.json", "--output-dir", "invalid-report"]);
   requireStatus(invalid, 1, "Invalid CLI check");
-  if (!invalid.stdout.includes("HierarchyGuard: FAIL")) throw new Error("Invalid CLI output did not report FAIL.");
+  if (!invalid.stdout.includes("MaintenGraph: FAIL")) throw new Error("Invalid CLI output did not report FAIL.");
 
   const unchanged = run([
     "check",
@@ -66,7 +66,7 @@ try {
   if (version.stdout.trim() !== packageJson.version) throw new Error("Bundled CLI version does not match package.json.");
   const help = run(["--help"]);
   requireStatus(help, 0, "Help command");
-  if (!help.stdout.includes("hierarchyguard check") || !help.stdout.includes("--baseline") || !help.stdout.includes("--gate-mode")) {
+  if (!help.stdout.includes("maintengraph check") || !help.stdout.includes("--baseline") || !help.stdout.includes("--gate-mode")) {
     throw new Error("Bundled CLI help is incomplete.");
   }
 

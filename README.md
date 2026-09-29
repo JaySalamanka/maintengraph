@@ -1,159 +1,169 @@
 <p align="center">
-  <img src="docs/assets/hierarchyguard-banner.svg" alt="HierarchyGuard — CMMS Asset Hierarchy Quality Gate" width="900">
+  <img src="docs/assets/maintengraph-banner.svg" alt="MaintenGraph — evidence-aware CMMS quality gate" width="900">
 </p>
 
 <p align="center">
-  <a href="https://github.com/JaySalamanka/hierarchyguard/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/JaySalamanka/hierarchyguard/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/JaySalamanka/maintengraph/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/JaySalamanka/maintengraph/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MPL-2.0" src="https://img.shields.io/badge/license-MPL--2.0-0b7285.svg"></a>
   <img alt="Node.js 22+" src="https://img.shields.io/badge/node-%3E%3D22-339933.svg">
   <img alt="Network egress: none" src="https://img.shields.io/badge/runtime%20egress-none-1f6feb.svg">
 </p>
 
-**HierarchyGuard catches structural defects in CMMS asset hierarchies before import.**
-It validates CSV files locally, points to exact rows, produces deterministic
-JSON/Markdown/SARIF evidence, and runs as either a GitHub Action or Node.js CLI.
+**MaintenGraph is an evidence-aware quality gate for CMMS asset hierarchies.**
+It checks graph integrity, import readiness, physical-identity discipline,
+evidence coverage and review status before a hierarchy reaches a CMMS.
 
-No account. No telemetry. No customer-data upload. No vendor lock-in.
+No account. No telemetry. No customer-data upload. No automatic rewriting.
 
-## Why teams use it
+## From a valid tree to a defensible asset register
 
-Hierarchy data can look reasonable in a spreadsheet and still fail an import,
-create orphaned assets, hide maintenance history, or produce a misleading
-equipment structure. HierarchyGuard turns those risks into a repeatable quality
-gate that engineering, maintenance, data and implementation teams can review
-before a CMMS is touched.
+Traditional validators can prove that every parent exists. They cannot tell you
+that two spreadsheet rows represent the same pump, that a shared panel was
+duplicated under three consumers, or that a guessed placement was presented as
+confirmed.
 
-It detects:
+MaintenGraph adds a governed release layer:
 
-- missing, duplicate and case-colliding asset IDs;
-- missing parents, self-parenting and graph cycles;
-- invalid root counts and configured depth violations;
-- parent-after-child import ordering;
-- declared-level and path inconsistencies;
-- duplicated sibling names and boundary whitespace;
-- control characters and spreadsheet-formula hazards.
+- one physical identity cannot silently become multiple CMMS objects;
+- every hierarchy claim can carry exact source or field-verification evidence;
+- confirmed, accepted, provisional, open and rejected decisions remain explicit;
+- physical records without identity keys are exposed;
+- legacy identifiers cannot silently map to multiple current assets;
+- catch-all buckets such as “Electrical Parts” can be prohibited;
+- unresolved review records block release mode instead of disappearing into prose.
 
-The score is transparent and designed for triage. It is not target-CMMS
-certification and does not guarantee acceptance by a third-party importer.
+It also retains all v1 structural checks: IDs, parents, cycles, roots, depth,
+ordering, levels, paths, sibling names, unsafe formulas and hidden characters.
 
-## GitHub Action — five-minute setup
+MaintenGraph does **not** infer physical truth, merge assets, invent missing
+values or certify a third-party importer. It makes the engineering decision
+trail testable.
 
-Create `.hierarchyguard.json` using the configuration below, then add:
+## GitHub Action
 
 ```yaml
-name: Asset hierarchy quality
+name: Governed asset hierarchy
 
 on:
   pull_request:
     paths:
       - "asset-data/**"
-      - ".hierarchyguard.json"
+      - ".maintengraph.json"
 
 permissions:
   contents: read
 
 jobs:
-  hierarchy:
+  asset-governance:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - id: hierarchyguard
-        uses: JaySalamanka/hierarchyguard@v1
+      - id: maintengraph
+        uses: JaySalamanka/maintengraph@v2
         with:
           files: asset-data/**/*.csv
-          config: .hierarchyguard.json
+          config: .maintengraph.json
           fail-on: error
 ```
 
-The Action needs no secret and no write permission. It publishes aggregate
-counts only by default. Detailed annotations are opt-in with
-`publish-details: true` because file paths and finding messages may reveal
-operational information.
+The Action requests no secret and no write permission. Aggregate counts are
+published by default; finding details remain opt-in because asset identifiers
+and source references may be operationally sensitive.
 
-## CLI
-
-Requires Node.js 22 or newer.
-
-```bash
-npm install --global https://github.com/JaySalamanka/hierarchyguard/releases/download/v1.0.0/hierarchyguard-1.0.0.tgz
-
-hierarchyguard check "asset-data/**/*.csv" \
-  --config .hierarchyguard.json \
-  --output-dir .hierarchyguard
-```
-
-Exit codes are `0` for a passing gate, `1` when findings reach the configured
-threshold, and `2` for malformed input, configuration or operational errors.
-Reports are written before exit code `1`.
-
-## Configuration
+## Governed configuration
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "files": ["asset-data/**/*.csv"],
   "columns": {
     "id": "asset_id",
     "parent": "parent_asset_id",
     "name": "name",
     "path": "path",
-    "level": "level"
+    "level": "level",
+    "identity": "physical_identity",
+    "evidence": "evidence",
+    "reviewStatus": "review_status",
+    "objectClass": "object_class",
+    "legacyIds": "legacy_ids"
   },
   "rules": {
     "rootPolicy": "one",
-    "maxDepth": 8,
+    "maxDepth": 6,
     "requireParentBeforeChild": true,
-    "pathSeparator": "/"
+    "pathSeparator": "/",
+    "governance": {
+      "mode": "review",
+      "forbidGenericBuckets": true
+    }
   },
   "gate": { "failOn": "error" }
 }
 ```
 
-Only ID, parent ID and name are required. Blank parent IDs represent roots.
-Each matched CSV is treated as an independent hierarchy in V1. See the
-[rule reference](docs/RULE_REFERENCE.md) for every finding and remediation.
+Use `review` while reconciling sources. Switch to `release` only when the file
+is intended for an approved import or controlled handoff. Release mode blocks
+unresolved states and missing evidence instead of encouraging false certainty.
 
-## Adopt it without fixing every legacy finding first
+See the complete [asset governance method](docs/ASSET_GOVERNANCE_METHOD.md),
+[rule reference](docs/RULE_REFERENCE.md), and synthetic
+[governed example](examples/governed-assets.csv).
 
-Capture an approved result as a baseline and fail only on new or more-severe
-finding fingerprints:
+## CLI
+
+Requires Node.js 22 or newer.
 
 ```bash
-hierarchyguard check "asset-data/**/*.csv" \
-  --config .hierarchyguard.json \
-  --baseline .hierarchyguard-baselines/main.json \
+npx maintengraph check "asset-data/**/*.csv" \
+  --config .maintengraph.json \
+  --output-dir .maintengraph
+```
+
+The legacy `hierarchyguard` executable remains an alias in v2. Exit codes are
+`0` for a passing gate, `1` when findings reach the configured threshold, and
+`2` for malformed input, configuration or operational errors.
+
+## Review without freezing legacy defects
+
+Capture an approved result and fail only on new or more-severe findings:
+
+```bash
+maintengraph check "asset-data/**/*.csv" \
+  --config .maintengraph.json \
+  --baseline .maintengraph-baselines/main.json \
   --gate-mode new
 ```
 
-Reports include deterministic `new`, `resolved`, and `unchanged` counts. A
-baseline stays inside the workspace, is never retrieved by the tool, must use
-the same ruleset, and cannot be overwritten by the current run.
+Baselines are local, deterministic and ruleset-bound. HierarchyGuard v1
+baselines must be regenerated for MaintenGraph v2; see the
+[migration guide](docs/MIGRATION_V2.md).
 
-## Outputs
+## Evidence outputs
 
-Every run creates:
+Every run writes:
 
 - `results.json` — deterministic machine-readable evidence;
 - `results.sarif` — compatible with SARIF consumers;
 - `summary.md` — human-readable findings and correction guidance.
 
 Input hashes, configuration hashes and stable finding fingerprints make changes
-reviewable across runs. Generated reports may contain identifiers and paths, so
-treat the output directory as operational data.
+reviewable across runs. Generated reports may contain operational identifiers,
+so treat the output directory as controlled data.
 
-## Security and privacy by design
+## Security and privacy
 
 - Runtime network and subprocess access are blocked in verification tests.
 - Absolute paths, traversal, symlinks and workspace escapes are rejected.
-- CSV size, row, column, field and finding counts are bounded.
-- Output writes are contained, atomic and owner-only where supported.
-- Compiled Action and CLI bundles are rebuilt and diffed in CI.
-- Dependencies are pinned and automatically reviewed.
+- CSV sizes, rows, columns, fields and findings are bounded.
+- Reports are contained, atomic and owner-only where supported.
+- Action and CLI bundles are reproducibly rebuilt and diffed in CI.
+- Dependencies and workflow actions are pinned and reviewed.
 
-Read the complete [data-handling statement](docs/DATA_HANDLING.md),
-[security policy](SECURITY.md), and [support policy](SUPPORT.md).
+Read [data handling](docs/DATA_HANDLING.md), [security](SECURITY.md), and
+[support](SUPPORT.md).
 
 ## Development
 
@@ -163,15 +173,7 @@ npm run check
 npm run pack:inspect
 ```
 
-`dist/` contains reviewed release artifacts committed alongside their source.
-CI rebuilds them and fails when the bundle differs. Third-party notices ship in
-the adjacent `licenses.txt` files.
-
-## Project stewardship
-
-HierarchyGuard is created and maintained by **Mohammad Allatayfeh**. External
-contributions are welcome under the [contribution policy](CONTRIBUTING.md).
-
-Copyright 2026 Mohammad Allatayfeh. Source code is licensed under the
-[Mozilla Public License 2.0](LICENSE). Product names and marks are governed by
-the [marks policy](TRADEMARKS.md).
+MaintenGraph is created and maintained by **Mohammad Allatayfeh**. Copyright
+2026 Mohammad Allatayfeh. Source code is licensed under the
+[Mozilla Public License 2.0](LICENSE); product names and marks follow the
+[marks policy](TRADEMARKS.md).

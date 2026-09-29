@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Private security report
-    url: https://github.com/JaySalamanka/hierarchyguard/security/advisories/new
+    url: https://github.com/JaySalamanka/maintengraph/security/advisories/new
     about: Report a vulnerability privately; never attach customer data.

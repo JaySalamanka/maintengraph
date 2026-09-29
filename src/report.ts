@@ -131,7 +131,7 @@ export function renderMarkdown(
   const status = report.summary.passed ? "PASS" : "FAIL";
   const includeFindings = options.includeFindings ?? true;
   const lines = [
-    `# HierarchyGuard — ${status}`,
+    `# MaintenGraph — ${status}`,
     "",
     `**Score:** ${report.summary.score}/100  `,
     `**Rows:** ${report.summary.rows} across ${report.summary.files} file(s)  `,
@@ -187,7 +187,7 @@ export function renderMarkdown(
 
 export function renderConsole(report: AssetTreeReport): string {
   const lines = [
-    `HierarchyGuard: ${report.summary.passed ? "PASS" : "FAIL"}`,
+    `MaintenGraph: ${report.summary.passed ? "PASS" : "FAIL"}`,
     `Score ${report.summary.score}/100 | ${report.summary.rows} rows | ${report.summary.errors} errors | ${report.summary.warnings} warnings`,
     `Gate ${report.gate.mode}/${report.gate.failOn}`,
   ];
@@ -220,7 +220,7 @@ export function renderSarif(report: AssetTreeReport): string {
           driver: {
             name: report.tool.name,
             version: report.tool.version,
-            informationUri: "https://github.com/JaySalamanka/hierarchyguard",
+            informationUri: "https://github.com/JaySalamanka/maintengraph",
             rules: usedRuleIds.map((ruleId) => ({
               id: ruleId,
               name: RULES[ruleId]?.name ?? ruleId,

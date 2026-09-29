@@ -24,7 +24,7 @@ afterEach(async () => {
   await Promise.all(temporaryDirectories.splice(0).map((path) => rm(path, { force: true, recursive: true })));
 });
 
-describe("HierarchyGuard engine", () => {
+describe("MaintenGraph engine", () => {
   it("passes a valid synthetic hierarchy with a perfect score", async () => {
     const workspace = await workspaceWith("valid.csv", "config.json");
     const result = await execute({
@@ -165,5 +165,87 @@ describe("HierarchyGuard engine", () => {
         outputDir: "out",
       }),
     ).rejects.toThrow(/pathSeparator must contain 1 to 16 printable characters/);
+  });
+
+  it("passes an evidence-backed governed release hierarchy", async () => {
+    const workspace = await workspaceWith();
+    await writeFile(
+      resolve(workspace, "governed.csv"),
+      [
+        "asset_id,parent_asset_id,name,path,level,physical_identity,evidence,review_status,object_class,legacy_ids",
+        "PLANT,,PLANT,PLANT,1,,FIELD-001,confirmed,system,",
+        "P-101,PLANT,FEED PUMP,PLANT/FEED PUMP,2,PUMP-SERIAL-101,DRAWING-10#42;FIELD-002,confirmed,equipment,OLD-P-1",
+        "M-101,P-101,ELECTRIC MOTOR,PLANT/FEED PUMP/ELECTRIC MOTOR,3,MOTOR-SERIAL-101,BOM-10#7,accepted,component,OLD-M-1",
+      ].join("\n") + "\n",
+      "utf8",
+    );
+    await writeFile(
+      resolve(workspace, "config.json"),
+      JSON.stringify({
+        version: 2,
+        files: ["governed.csv"],
+        columns: {
+          id: "asset_id",
+          parent: "parent_asset_id",
+          name: "name",
+          path: "path",
+          level: "level",
+          identity: "physical_identity",
+          evidence: "evidence",
+          reviewStatus: "review_status",
+          objectClass: "object_class",
+          legacyIds: "legacy_ids",
+        },
+        rules: {
+          maxDepth: 6,
+          governance: { mode: "release", forbidGenericBuckets: true },
+        },
+      }) + "\n",
+      "utf8",
+    );
+
+    const result = await execute({ workspace, configPath: "config.json", configRequired: true, outputDir: "out" });
+    expect(result.exitCode).toBe(0);
+    expect(result.report.findings).toEqual([]);
+  });
+
+  it("blocks unsupported certainty, duplicate physical identities, and hidden ownership", async () => {
+    const workspace = await workspaceWith();
+    await writeFile(
+      resolve(workspace, "unresolved.csv"),
+      [
+        "asset_id,parent_asset_id,name,path,level,physical_identity,evidence,review_status,object_class,legacy_ids",
+        "PLANT,,PLANT,PLANT,1,,FIELD-001,confirmed,system,",
+        "A-1,PLANT,ELECTRICAL PARTS,PLANT/ELECTRICAL PARTS,2,SAME-ASSET,,provisional,equipment,OLD-1",
+        "A-2,PLANT,DRIVE,PLANT/DRIVE,2,SAME-ASSET,DRAWING-2#9,confirmed,equipment,OLD-1",
+      ].join("\n") + "\n",
+      "utf8",
+    );
+    await writeFile(
+      resolve(workspace, "config.json"),
+      JSON.stringify({
+        version: 2,
+        files: ["unresolved.csv"],
+        columns: {
+          id: "asset_id",
+          parent: "parent_asset_id",
+          name: "name",
+          path: "path",
+          level: "level",
+          identity: "physical_identity",
+          evidence: "evidence",
+          reviewStatus: "review_status",
+          objectClass: "object_class",
+          legacyIds: "legacy_ids",
+        },
+        rules: { governance: { mode: "release", forbidGenericBuckets: true } },
+      }) + "\n",
+      "utf8",
+    );
+
+    const result = await execute({ workspace, configPath: "config.json", configRequired: true, outputDir: "out" });
+    const ruleIds = new Set(result.report.findings.map((finding) => finding.ruleId));
+    expect(result.exitCode).toBe(1);
+    expect([...ruleIds]).toEqual(expect.arrayContaining(["ATC021", "ATC022", "ATC024", "ATC025", "ATC026"]));
   });
 });

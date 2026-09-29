@@ -66,7 +66,7 @@ try {
   await mkdir(consumer, { recursive: true, mode: 0o700 });
   await writeFile(
     resolve(consumer, "package.json"),
-    `${JSON.stringify({ name: "hierarchyguard-clean-install", private: true }, null, 2)}\n`,
+    `${JSON.stringify({ name: "maintengraph-clean-install", private: true }, null, 2)}\n`,
     { encoding: "utf8", mode: 0o600 },
   );
   const installed = runNpm(
@@ -75,7 +75,11 @@ try {
   );
   requireSuccess(installed, "Clean tarball install");
 
-  const installedRoot = resolve(consumer, "node_modules", "hierarchyguard");
+  const installedRoot = resolve(consumer, "node_modules", "maintengraph");
+  const installedManifest = JSON.parse(await readFile(resolve(installedRoot, "package.json"), "utf8"));
+  if (installedManifest.bin?.maintengraph !== "dist/cli/index.js" || installedManifest.bin?.hierarchyguard !== "dist/cli/index.js") {
+    throw new Error("Package does not expose both the MaintenGraph CLI and the v1 compatibility alias.");
+  }
   const readme = await readFile(resolve(installedRoot, "README.md"), "utf8");
   for (const link of relativeReadmeLinks(readme)) {
     if (!existsSync(resolve(installedRoot, link))) {

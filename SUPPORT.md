@@ -1,6 +1,6 @@
 # Support policy
 
-HierarchyGuard is community-supported open-source software provided without a
+MaintenGraph is community-supported open-source software provided without a
 support SLA.
 
 - Read the [README](README.md) and [rule reference](docs/RULE_REFERENCE.md).

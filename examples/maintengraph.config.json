@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "files": ["asset-data/**/*.csv"],
+  "columns": {
+    "id": "asset_id",
+    "parent": "parent_asset_id",
+    "name": "name",
+    "path": "path",
+    "level": "level",
+    "identity": "physical_identity",
+    "evidence": "evidence",
+    "reviewStatus": "review_status",
+    "objectClass": "object_class",
+    "legacyIds": "legacy_ids"
+  },
+  "rules": {
+    "rootPolicy": "one",
+    "maxDepth": 6,
+    "requireParentBeforeChild": true,
+    "pathSeparator": "/",
+    "governance": {
+      "mode": "review",
+      "evidenceSeparator": ";",
+      "legacyIdSeparator": ";",
+      "forbidGenericBuckets": true
+    }
+  },
+  "gate": { "failOn": "error" }
+}

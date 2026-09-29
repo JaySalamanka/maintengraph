@@ -19,16 +19,16 @@ interface CliOptions {
   gateMode: GateMode;
 }
 
-const HELP = `HierarchyGuard ${TOOL_VERSION}
+const HELP = `MaintenGraph ${TOOL_VERSION}
 
 Usage:
-  hierarchyguard check [CSV globs...] [options]
+  maintengraph check [CSV globs...] [options]
 
 Options:
-  --config <path>       JSON configuration path (default: .hierarchyguard.json)
-  --output-dir <path>   Contained report directory (default: .hierarchyguard)
+  --config <path>       JSON configuration path (default: .maintengraph.json)
+  --output-dir <path>   Contained report directory (default: .maintengraph)
   --fail-on <severity>  error, warning, or none
-  --baseline <path>     Existing HierarchyGuard result JSON inside the workspace
+  --baseline <path>     Existing MaintenGraph result JSON inside the workspace
   --gate-mode <mode>    all or new (default: all)
   --version             Print the version
   --help                Show this help
@@ -46,9 +46,9 @@ function parseArgs(args: string[]): CliOptions | "help" | "version" {
   if (args[0] !== "check") throw new OperationalError("The first argument must be 'check'.");
 
   const patterns: string[] = [];
-  let configPath = ".hierarchyguard.json";
+  let configPath = ".maintengraph.json";
   let configRequired = false;
-  let outputDir = ".hierarchyguard";
+  let outputDir = ".maintengraph";
   let failOn: FailOn | undefined;
   let baselinePath: string | undefined;
   let gateMode: GateMode = "all";
@@ -114,6 +114,6 @@ async function main(): Promise<void> {
 
 main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  process.stderr.write(`HierarchyGuard operational error: ${message}\n`);
+    process.stderr.write(`MaintenGraph operational error: ${message}\n`);
   process.exitCode = 2;
 });

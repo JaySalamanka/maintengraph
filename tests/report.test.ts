@@ -10,7 +10,7 @@ import { AssetTreeReport } from "../src/types";
 function reportWithMessage(message: string): AssetTreeReport {
   return {
     schemaVersion: "1.1",
-    tool: { name: "hierarchyguard", version: "test", ruleset: "generic@test" },
+    tool: { name: "maintengraph", version: "test", ruleset: "asset-governance@test" },
     configSha256: "0".repeat(64),
     inputs: [{ path: "asset-data/test.csv", sha256: "1".repeat(64), rows: 1 }],
     gate: { mode: "all", failOn: "error" },
@@ -59,7 +59,7 @@ describe("Markdown reporter", () => {
       sha256: "2".repeat(64),
       schemaVersion: "1.1",
       toolVersion: "test",
-      ruleset: "generic@1",
+      ruleset: "asset-governance@2",
     };
     report.comparison.unchangedFindings = { total: 1, errors: 1, warnings: 0, notices: 0 };
     report.comparison.newFindings = { total: 0, errors: 0, warnings: 0, notices: 0 };

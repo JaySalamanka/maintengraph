@@ -5,6 +5,22 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-29
+
+### Added
+
+- Evidence-aware review and release governance profiles.
+- Governed physical-identity, evidence, review-status, object-class and legacy-ID columns.
+- Deterministic blockers for unsupported certainty, duplicated physical identities,
+  ambiguous migration ownership and catch-all ownership buckets.
+- A field-tested asset reconciliation method, governed example and v1 migration guide.
+
+### Changed
+
+- Renamed the product and primary CLI from HierarchyGuard to MaintenGraph.
+- Kept configuration v1 and the `hierarchyguard` executable as compatibility paths.
+- Advanced the ruleset to `asset-governance@2`; v1 baselines must be regenerated.
+
 ## [1.0.1] - 2026-08-23
 
 ### Changed
@@ -27,4 +43,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 [1.0.0]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.0
 [1.0.1]: https://github.com/JaySalamanka/hierarchyguard/releases/tag/v1.0.1
-[Unreleased]: https://github.com/JaySalamanka/hierarchyguard/compare/v1.0.1...HEAD
+[2.0.0]: https://github.com/JaySalamanka/maintengraph/releases/tag/v2.0.0
+[Unreleased]: https://github.com/JaySalamanka/maintengraph/compare/v2.0.0...HEAD

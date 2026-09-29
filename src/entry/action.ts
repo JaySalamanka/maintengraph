@@ -40,7 +40,7 @@ function annotate(finding: Finding): void {
 
 async function main(): Promise<void> {
   const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
-  const configPath = core.getInput("config") || ".hierarchyguard.json";
+  const configPath = core.getInput("config") || ".maintengraph.json";
   const patterns = core.getMultilineInput("files", { trimWhitespace: true }).filter(Boolean);
   const failOnInput = core.getInput("fail-on").trim();
   const baselinePath = core.getInput("baseline").trim();
@@ -50,8 +50,8 @@ async function main(): Promise<void> {
     workspace,
     ...(patterns.length > 0 ? { patterns } : {}),
     configPath,
-    configRequired: configPath !== ".hierarchyguard.json",
-    outputDir: core.getInput("output-dir") || ".hierarchyguard",
+    configRequired: configPath !== ".maintengraph.json",
+    outputDir: core.getInput("output-dir") || ".maintengraph",
     ...(failOnInput ? { failOn: parseFailOn(failOnInput) } : {}),
     ...(baselinePath ? { baselinePath } : {}),
     gateMode,

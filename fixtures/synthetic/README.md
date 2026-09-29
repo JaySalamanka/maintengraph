@@ -3,7 +3,7 @@
 **SYNTHETIC EXAMPLE — NOT CUSTOMER DATA**
 
 These CSV files were authored from a blank generic graph specification for
-HierarchyGuard tests. They do not describe a real site, company, customer,
+MaintenGraph tests. They do not describe a real site, company, customer,
 equipment register, drawing, or import project.
 
 | Fixture | Purpose | Author | Distribution status |

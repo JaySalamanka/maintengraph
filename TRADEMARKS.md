@@ -1,6 +1,6 @@
 # Names and marks
 
-HierarchyGuard is a product name used by Mohammad Allatayfeh. It is not
+MaintenGraph is a product name used by Mohammad Allatayfeh. It is not
 represented as a registered trademark.
 
 The MPL-2.0 license covers source-code rights; it does not grant rights to names,
