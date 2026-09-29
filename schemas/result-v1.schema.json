@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/JaySalamanka/hierarchyguard/main/schemas/result-v1.schema.json",
-  "title": "HierarchyGuard deterministic result v1",
+  "$id": "https://raw.githubusercontent.com/JaySalamanka/maintengraph/main/schemas/result-v1.schema.json",
+  "title": "MaintenGraph deterministic result v1",
   "type": "object",
   "additionalProperties": false,
   "$defs": {
@@ -25,7 +25,7 @@
       "additionalProperties": false,
       "required": ["name", "version", "ruleset"],
       "properties": {
-        "name": { "const": "hierarchyguard" },
+        "name": { "const": "maintengraph" },
         "version": { "type": "string" },
         "ruleset": { "type": "string" }
       }
@@ -70,7 +70,7 @@
                 "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
                 "schema_version": { "enum": ["1.0", "1.1"] },
                 "tool_version": { "type": "string" },
-                "ruleset": { "const": "generic@1" }
+                "ruleset": { "const": "asset-governance@2" }
               }
             }
           ]

@@ -1,9 +1,9 @@
 # Data handling
 
-HierarchyGuard V1 is an offline validator.
+MaintenGraph is an offline validator.
 
 - It reads only CSV files selected by repository-relative globs.
-- An optional baseline is an existing HierarchyGuard result JSON read from a
+- An optional baseline is an existing MaintenGraph result JSON read from a
   contained repository-relative path. Baselines are limited to 10 MiB and
   reject absolute paths, traversal, symbolic-link components, invalid UTF-8,
   malformed JSON, incompatible rulesets, operational errors, and incomplete
@@ -17,10 +17,10 @@ HierarchyGuard V1 is an offline validator.
   temporary-file replacement. Detailed reports still contain source-derived
   identifiers, paths, messages, and hashes, so the workspace itself must be
   access-controlled.
-- HierarchyGuard initiates no telemetry, analytics, external application request,
+- MaintenGraph initiates no telemetry, analytics, external application request,
   AI call, account lookup, remote validation, or file upload. Its GitHub
   integration dependency contains transport-capable code used by the Actions
-  ecosystem, but HierarchyGuard does not invoke those network APIs.
+  ecosystem, but MaintenGraph does not invoke those network APIs.
 - It needs no GitHub secret and the sample workflow grants only `contents: read`.
 - It does not create pull-request comments. By default GitHub receives only
   aggregate counts and score in the job summary. Detailed paths and messages

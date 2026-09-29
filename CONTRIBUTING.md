@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for improving HierarchyGuard. Bug fixes, tests, documentation and
+Thank you for improving MaintenGraph. Bug fixes, tests, documentation and
 well-scoped rule proposals are welcome.
 
 ## Before opening a pull request

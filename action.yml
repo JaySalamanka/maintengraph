@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Mohammad Allatayfeh
 # SPDX-License-Identifier: MPL-2.0
 
-name: HierarchyGuard - CMMS Asset Hierarchy Quality Gate
-description: Validate asset hierarchy CSV files offline and annotate structural import blockers.
+name: MaintenGraph - Evidence-Aware CMMS Quality Gate
+description: Validate structure, physical identity, evidence, and review readiness in CMMS asset hierarchies.
 author: Mohammad Allatayfeh
 
 inputs:
@@ -12,12 +12,12 @@ inputs:
   config:
     description: Optional JSON configuration path relative to the repository workspace.
     required: false
-    default: .hierarchyguard.json
+    default: .maintengraph.json
   fail-on:
     description: Optional gate override (error, warning, or none).
     required: false
   baseline:
-    description: Optional existing HierarchyGuard result JSON path relative to the repository workspace.
+    description: Optional existing MaintenGraph result JSON path relative to the repository workspace.
     required: false
   gate-mode:
     description: Gate all findings or only findings absent from the baseline (all or new).
@@ -26,7 +26,7 @@ inputs:
   output-dir:
     description: Contained directory for JSON, SARIF, and Markdown reports.
     required: false
-    default: .hierarchyguard
+    default: .maintengraph
   publish-details:
     description: Opt in to publishing finding paths and messages in GitHub annotations and the job summary.
     required: false

@@ -16,7 +16,7 @@ permissions:
   security-events: write
 
 concurrency:
-  group: hierarchyguard-codeql-${{ github.ref }}
+  group: maintengraph-codeql-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

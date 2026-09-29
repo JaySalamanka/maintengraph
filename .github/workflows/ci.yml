@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: hierarchyguard-${{ github.workflow }}-${{ github.ref }}
+  group: maintengraph-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -89,7 +89,7 @@ jobs:
         with:
           files: fixtures/synthetic/valid.csv
           config: fixtures/synthetic/config.json
-          output-dir: .hierarchyguard-action
+          output-dir: .maintengraph-action
 
       - name: Verify Action outputs
         env:
@@ -103,7 +103,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          node dist/cli/index.js check fixtures/synthetic/invalid.csv --config fixtures/synthetic/config.json --output-dir .hierarchyguard-invalid
+          node dist/cli/index.js check fixtures/synthetic/invalid.csv --config fixtures/synthetic/config.json --output-dir .maintengraph-invalid
           status=$?
           set -e
           test "$status" -eq 1

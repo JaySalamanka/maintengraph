@@ -133,7 +133,7 @@ describe("baseline regression gating", () => {
     expect(result.report.comparison.unchangedFindings.total).toBe(1);
   });
 
-  it("requires the HierarchyGuard tool and matching generic ruleset", async () => {
+  it("requires the MaintenGraph tool and matching governance ruleset", async () => {
     const root = await workspace();
     await writeFile(resolve(root, "tree.csv"), "asset_id,parent_asset_id,name\nROOT,,Root\n", "utf8");
     const generated = await run(root, "generated");
@@ -143,8 +143,8 @@ describe("baseline regression gating", () => {
     await writeFile(resolve(root, "wrong-tool.json"), `${JSON.stringify(baseline)}\n`, "utf8");
     await expect(run(root, "wrong-tool", { baselinePath: "wrong-tool.json" })).rejects.toThrow(/tool.name/);
 
-    baseline.tool.name = "hierarchyguard";
-    baseline.tool.ruleset = "generic@2";
+    baseline.tool.name = "maintengraph";
+    baseline.tool.ruleset = "asset-governance@3";
     await writeFile(resolve(root, "wrong-ruleset.json"), `${JSON.stringify(baseline)}\n`, "utf8");
     await expect(run(root, "wrong-ruleset", { baselinePath: "wrong-ruleset.json" })).rejects.toThrow(/ruleset/);
   });

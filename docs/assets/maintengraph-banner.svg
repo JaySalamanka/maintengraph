@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">MaintenGraph</title>
+  <desc id="desc">Evidence-aware CMMS hierarchy assurance</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07131f"/>
+      <stop offset="0.56" stop-color="#10283a"/>
+      <stop offset="1" stop-color="#183d49"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#45e0ae"/>
+      <stop offset="1" stop-color="#56a8ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="320" rx="28" fill="url(#bg)"/>
+  <g transform="translate(72 48)" fill="none" stroke="url(#accent)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M94 18v48M48 112h92M48 112v47M140 112v47"/>
+    <rect x="61" y="0" width="66" height="46" rx="11"/>
+    <rect x="15" y="159" width="66" height="46" rx="11"/>
+    <rect x="107" y="159" width="66" height="46" rx="11"/>
+    <path d="M193 67l32 13v39c0 39-21 67-52 83-13-7-24-15-33-25"/>
+    <path d="m177 124 13 13 28-31"/>
+    <circle cx="193" cy="67" r="5" fill="#45e0ae" stroke="none"/>
+  </g>
+  <text x="340" y="139" fill="#f5f9fb" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="70" font-weight="700" letter-spacing="-2">MaintenGraph</text>
+  <text x="344" y="198" fill="#afcad8" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="25" letter-spacing="1.7">EVIDENCE-AWARE CMMS QUALITY GATE</text>
+  <text x="344" y="247" fill="#63ddb7" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22">Structure &#8226; provenance &#8226; release confidence</text>
+</svg>

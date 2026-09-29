@@ -1,6 +1,6 @@
 # Code of conduct
 
-HierarchyGuard is a professional engineering project. Participants must be
+MaintenGraph is a professional engineering project. Participants must be
 respectful, constructive, technically honest and careful with operational data.
 
 Harassment, discrimination, threats, deliberate disruption, impersonation,

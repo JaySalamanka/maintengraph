@@ -96,7 +96,19 @@ export async function parseCsvFile(workspace: string, relativePath: string, conf
           return malformed(normalizedPath, sha256, "CSV contains duplicate column headers.");
         }
         headers = rawHeaders;
-        const required = [config.columns.id, config.columns.parent, config.columns.name];
+        const required = [
+          config.columns.id,
+          config.columns.parent,
+          config.columns.name,
+          ...(config.rules.governance.mode === "off"
+            ? []
+            : [
+                config.columns.identity,
+                config.columns.evidence,
+                config.columns.reviewStatus,
+                config.columns.objectClass,
+              ].filter((value): value is string => Boolean(value))),
+        ];
         const missing = required.filter((name) => !headers?.includes(name));
         if (missing.length > 0) {
           return malformed(normalizedPath, sha256, `Required mapped columns are missing: ${missing.join(", ")}.`);

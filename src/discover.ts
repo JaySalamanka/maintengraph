@@ -44,7 +44,7 @@ export async function discoverCsvFiles(workspace: string, patterns: string[], ma
     dot: false,
     followSymbolicLinks: false,
     suppressErrors: false,
-    ignore: ["**/node_modules/**", "**/.git/**", "**/.hierarchyguard/**", "**/.assettree/**"],
+    ignore: ["**/node_modules/**", "**/.git/**", "**/.maintengraph/**", "**/.hierarchyguard/**", "**/.assettree/**"],
   });
   const files: string[] = [];
   for await (const value of matches as AsyncIterable<string | Buffer>) {

@@ -26,7 +26,7 @@ severity, complexity and coordination needs; these targets are not an SLA.
 
 ## Security boundaries
 
-HierarchyGuard is intended to run without secrets, write permissions,
+MaintenGraph is intended to run without secrets, write permissions,
 telemetry, network egress or execution of CSV content. Regressions in path
 containment, report privacy, resource limits, deterministic output, dependency
 integrity or those runtime boundaries are security-sensitive.

@@ -47,7 +47,7 @@ export async function execute(options: ExecuteOptions): Promise<ExecuteResult> {
     throw new OperationalError("gate-mode new requires a baseline result path.");
   }
   const baseline = options.baselinePath ? await loadBaseline(workspace, options.baselinePath) : undefined;
-  const loaded = await loadConfig(workspace, options.configPath ?? ".hierarchyguard.json", options.configRequired ?? false);
+  const loaded = await loadConfig(workspace, options.configPath ?? ".maintengraph.json", options.configRequired ?? false);
   const config: AssetTreeConfig = structuredClone(loaded.config);
   if (options.patterns && options.patterns.length > 0) config.files = [...options.patterns];
   if (options.failOn) config.gate.failOn = options.failOn;
@@ -63,7 +63,7 @@ export async function execute(options: ExecuteOptions): Promise<ExecuteResult> {
   const initialReport = buildReport(parsed, configHash(config), config, retainedFindings);
   const report = baseline ? compareWithBaseline(initialReport, baseline, gateMode) : initialReport;
   const markdown = renderMarkdown(report, options.auditUrl);
-  const outputDirectory = await createContainedDirectory(workspace, options.outputDir ?? ".hierarchyguard");
+  const outputDirectory = await createContainedDirectory(workspace, options.outputDir ?? ".maintengraph");
   const absolutePaths = {
     json: resolve(outputDirectory, "results.json"),
     sarif: resolve(outputDirectory, "results.sarif"),

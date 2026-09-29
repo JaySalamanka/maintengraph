@@ -20,6 +20,22 @@ import {
 
 const CONTROL_CHARACTERS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u202A-\u202E\u2066-\u2069]/;
 const FORMULA_PREFIX = /^\s*(?:[=+@]|-(?!\d+(?:\.\d+)?$))/;
+const REVIEW_STATUSES = new Set(["confirmed", "accepted", "provisional", "open", "rejected"]);
+const RELEASE_STATUSES = new Set(["confirmed", "accepted"]);
+const OBJECT_CLASSES = new Set([
+  "system",
+  "location",
+  "assembly",
+  "equipment",
+  "component",
+  "signal",
+  "control",
+  "logical",
+  "reference",
+  "spare",
+]);
+const IDENTITY_CLASSES = new Set(["assembly", "equipment", "component"]);
+const GENERIC_BUCKET = /^(?:misc(?:ellaneous)?|other|others|electrical parts?|auxiliar(?:y|ies)(?: systems?)?|general parts?|unassigned|unknown)$/i;
 
 function canonical(value: string): string {
   return value.normalize("NFKC").trim().toLocaleLowerCase("en-US");
@@ -208,6 +224,157 @@ export function validateParsedFile(parsed: ParsedFile, config: AssetTreeConfig):
     folded.push(row);
     foldedGroups.set(foldedId, folded);
     if (!byId.has(row.id)) byId.set(row.id, row);
+  }
+
+  if (config.rules.governance.mode !== "off") {
+    const releaseMode = config.rules.governance.mode === "release";
+    const identityGroups = new Map<string, AssetRow[]>();
+    const legacyOwners = new Map<string, AssetRow[]>();
+    const identityColumn = config.columns.identity as string;
+    const evidenceColumn = config.columns.evidence as string;
+    const reviewStatusColumn = config.columns.reviewStatus as string;
+    const objectClassColumn = config.columns.objectClass as string;
+
+    for (const row of rows) {
+      const status = canonical(row.cells[reviewStatusColumn] ?? "");
+      const objectClass = canonical(row.cells[objectClassColumn] ?? "");
+      const identity = (row.cells[identityColumn] ?? "").trim();
+      const evidence = (row.cells[evidenceColumn] ?? "")
+        .split(config.rules.governance.evidenceSeparator)
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+      if (!REVIEW_STATUSES.has(status)) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC020",
+          "error",
+          reviewStatusColumn,
+          "Review status must be confirmed, accepted, provisional, open, or rejected.",
+          "Assign an explicit epistemic status; do not imply certainty through omission.",
+        ));
+      } else if (releaseMode && !RELEASE_STATUSES.has(status)) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC021",
+          "error",
+          reviewStatusColumn,
+          `Review status '${status}' is not releasable.`,
+          "Resolve the decision with evidence, explicitly accept it, or remove the row from the release dataset.",
+        ));
+      } else if (!releaseMode && (status === "provisional" || status === "open" || status === "rejected")) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC021",
+          "notice",
+          reviewStatusColumn,
+          `Review status '${status}' requires disposition before release.`,
+          "Preserve the uncertainty during review and resolve it before switching to release mode.",
+        ));
+      }
+
+      if (!OBJECT_CLASSES.has(objectClass)) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC027",
+          "error",
+          objectClassColumn,
+          "Object class is not part of the governed vocabulary.",
+          "Classify the row as system, location, assembly, equipment, component, signal, control, logical, reference, or spare.",
+        ));
+      }
+
+      if (status !== "rejected" && evidence.length === 0) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC022",
+          releaseMode ? "error" : "warning",
+          evidenceColumn,
+          "The hierarchy claim has no source or field-verification evidence reference.",
+          "Reference the drawing, BOM, register, inspection, or approved decision that supports this row.",
+        ));
+      }
+
+      if (IDENTITY_CLASSES.has(objectClass) && !identity) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC023",
+          releaseMode ? "error" : "warning",
+          identityColumn,
+          "A physical object has no physical-identity key.",
+          "Assign a stable identity only after the physical equivalence is supported; do not derive it from a repeated tag alone.",
+        ));
+      }
+      if (identity) {
+        const key = canonical(identity);
+        const group = identityGroups.get(key) ?? [];
+        group.push(row);
+        identityGroups.set(key, group);
+      }
+
+      if (config.columns.legacyIds) {
+        const legacyIds = new Set(
+          (row.cells[config.columns.legacyIds] ?? "")
+            .split(config.rules.governance.legacyIdSeparator)
+            .map((value) => canonical(value))
+            .filter(Boolean),
+        );
+        for (const legacyId of legacyIds) {
+          const owners = legacyOwners.get(legacyId) ?? [];
+          owners.push(row);
+          legacyOwners.set(legacyId, owners);
+        }
+      }
+
+      if (config.rules.governance.forbidGenericBuckets && GENERIC_BUCKET.test(row.name.trim())) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC026",
+          releaseMode ? "error" : "warning",
+          config.columns.name,
+          "Generic catch-all grouping hides physical ownership.",
+          "Place each retained part, control, signal, or reference beneath its evidenced physical or functional owner.",
+        ));
+      }
+    }
+
+    for (const group of identityGroups.values()) {
+      if (group.length < 2) continue;
+      for (const row of group) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC024",
+          "error",
+          identityColumn,
+          "Physical-identity key is assigned to more than one CMMS object.",
+          "Represent one physical asset once, consolidate proven duplicate representations, and retain former IDs as history.",
+        ));
+      }
+    }
+
+    for (const group of legacyOwners.values()) {
+      const distinctAssets = new Set(group.map((row) => row.id));
+      if (distinctAssets.size < 2) continue;
+      for (const row of group) {
+        findings.push(rowFinding(
+          file,
+          row,
+          "ATC025",
+          releaseMode ? "error" : "warning",
+          config.columns.legacyIds as string,
+          "Legacy ID is claimed by more than one current object.",
+          "Resolve the migration identity or document a single current owner before release.",
+        ));
+      }
+    }
   }
 
   for (const [id, group] of [...exactGroups.entries()].sort(([left], [right]) => compareText(left, right))) {

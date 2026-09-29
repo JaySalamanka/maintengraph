@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible HierarchyGuard defect using synthetic data only.
+description: Report a reproducible MaintenGraph defect using synthetic data only.
 title: "[Bug]: "
 labels: [bug, triage]
 body:
@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Version
-      description: Output of `hierarchyguard --version` or the immutable Action tag/SHA.
+      description: Output of `maintengraph --version` or the immutable Action tag/SHA.
     validations:
       required: true
   - type: dropdown

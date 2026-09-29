@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(readFileSync(resolve(root, "release-allowlist.json"), "utf8"));
 const allowedPaths = new Set(manifest.allowedPaths);
-const ignoredRootDirectories = new Set([".git", "node_modules", "coverage", ".cache", ".tmp", ".assettree", ".hierarchyguard"]);
+const ignoredRootDirectories = new Set([".git", "node_modules", "coverage", ".cache", ".tmp", ".assettree", ".hierarchyguard", ".maintengraph"]);
 const allowedDirectories = new Set();
 for (const path of allowedPaths) {
   const parts = path.split("/");
