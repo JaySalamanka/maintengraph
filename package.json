@@ -45,12 +45,12 @@
   },
   "devDependencies": {
     "@actions/core": "3.0.1",
-    "@types/node": "26.6.3",
+    "@types/node": "26.6.5",
     "@vercel/ncc": "0.45.0",
     "csv-parse": "7.0.3",
     "fast-glob": "3.3.3",
     "typescript": "5.9.3",
-    "vitest": "4.1.11"
+    "vitest": "4.1.12"
   },
   "overrides": {
     "undici": "6.28.1"
